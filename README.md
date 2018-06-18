@@ -6,7 +6,7 @@ Copyright (c) 2018, The Fonero Project (www.fonero.org)
 
 1. Clone the repo:
 		
-		git clone https://github.com/fonero-project/fonero-gui-lite
+		git clone https://github.com/fonero-project/fonero-gui
 
 2. Install dependencies (with Python 2.7):
 
