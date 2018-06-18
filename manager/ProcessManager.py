@@ -80,11 +80,9 @@ class WalletCliManager(ProcessManager):
     
     def __init__(self, resources_path, wallet_file_path, wallet_log_path, restore_wallet=False, restore_height=0):
         if not restore_wallet:
-            wallet_args = u'%s %s --generate-new-wallet %s --log-file %s --log-level 4 ' \
-                                                % ("Resources/bin/fonero-wallet-cli", "--daemon-address node.fonero.org:18181 --trusted-daemon", wallet_file_path, wallet_log_path)
+            wallet_args = u'%s/bin/fonero-wallet-cli --daemon-address %s --generate-new-wallet=%s --log-file=%s ' % (resources_path, "node.fonero.org:18181 --trusted-daemon", wallet_file_path, wallet_log_path)
         else:
-            wallet_args = u'%s %s --restore-deterministic-wallet --restore-height %s --log-file %s --log-level 4 ' \
-                                                % ("Resources/bin/fonero-wallet-cli", "--daemon-address node.fonero.org:18181 --trusted-daemon", restore_height, wallet_log_path)
+	    wallet_args = u'%s/bin/fonero-wallet-cli --daemon-address %s --log-file=%s --restore-deterministic-wallet --restore-height %d' % (resources_path, "node.fonero.org:18181 --trusted-daemon", wallet_log_path, restore_height)
         ProcessManager.__init__(self, wallet_args, "fonero-wallet-cli")
         self.ready = Event()
         self.last_error = ""
@@ -143,7 +141,8 @@ class WalletRPCManager(ProcessManager):
     def __init__(self, resources_path, wallet_file_path, wallet_password, app, log_level=1):
         self.user_agent = str(uuid4().hex)
         wallet_log_path = os.path.join(os.path.dirname(wallet_file_path), "fonero-wallet-rpc.log")
-        wallet_rpc_args = u'%s %s --wallet-file %s --password %s --log-file %s --rpc-bind-port %s --log-level %s' % ("Resources/bin/fonero-wallet-rpc --disable-rpc-login", "--daemon-address node.fonero.org:18181 --trusted-daemon", wallet_file_path, wallet_password, wallet_log_path, WALLET_RPC_PORT, log_level)
+	# --trusted-daemon
+        wallet_rpc_args = u'%s/bin/fonero-wallet-rpc --disable-rpc-login --daemon-address %s --wallet-file %s --password %s --log-file %s --log-level %d --rpc-bind-port %d' % (resources_path, "node.fonero.org:18181", wallet_file_path, wallet_password, wallet_log_path, log_level, WALLET_RPC_PORT)
         ProcessManager.__init__(self, wallet_rpc_args, "fonero-wallet-rpc")
         sleep(0.2)
         self.send_command(wallet_password)
